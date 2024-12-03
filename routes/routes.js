@@ -20,12 +20,17 @@ router.post("/login", async (req, res) => {
 
 router.post("/register", async (req, res) => {
   const {username, password} = req.body
-
+  
+  const userInList = users.find(u => u.username === username)
+  console.log(users)
   const hashedPassword = await bcrypt.hash(password, 10)
 
+  if(userInList) {
+    return res.status(409).json({ "result" : "El usuario ya existe" })
+  }
   users.push({username, password: hashedPassword})
 
-  res.status(201).send("Usuario registrado")
+  res.status(201).json({ "result" : "Usuario registrado"})
 })
 
 router.post("/verifyToken", (req, res) => {
